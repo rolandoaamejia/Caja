@@ -2,6 +2,8 @@ import express, { Application } from 'express';
 import { Request, Response } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import helmet from 'helmet';
+import * as dotenv from 'dotenv';
 import { createConnection } from 'typeorm';
 import "reflect-metadata";
 
@@ -10,18 +12,29 @@ import { createRoles } from './libs/initialSetup.lib';
 
 import authRoutes from './routes/auth.routes';
 
+dotenv.config();
 
 const app: Application = express();
 
 //* Settings
 
-app.set('port', 3000);
+app.set('port', process.env.PORT || 3000);
 
 //* Middlewares
+app.use(helmet());
 
+const corsOptions = {
+    origin: `${process.env.HOST_FRONTEND}`,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+};
+
+app.use(cors(corsOptions));
 app.use(cors());
 app.use(morgan('dev'));
-app.use(express.json())
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 
 //* Routes
 app.use('/api', authRoutes);
