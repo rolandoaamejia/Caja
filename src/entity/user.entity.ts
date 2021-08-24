@@ -1,4 +1,4 @@
-import { AfterInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AfterInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Rol as RoleEty } from "./role.entity";
 
 @Entity()
@@ -31,7 +31,7 @@ export class Usuario {
     })
     apellidos: string;
 
-    @OneToOne(type => RoleEty)
+    @ManyToOne(type => RoleEty)
     @JoinColumn()
     rol: RoleEty;
 

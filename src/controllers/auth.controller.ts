@@ -5,6 +5,10 @@ import { Rol as RoleEty } from '../entity/role.entity';
 import { User } from 'interfaces/User.interface';
 import { Role } from '../interfaces/Role.interface';
 
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+const saltRounds = 10;
+
 
 export const signup = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -12,11 +16,14 @@ export const signup = async (req: Request, res: Response): Promise<Response> => 
 
         let user: User = {
             usuario,
-            password,
+            password: await encryptPassword(password),
             nombres,
             apellidos
         }
         let role: Role | undefined;
+
+        if (await existUser(usuario)) return res.status(400).json({ message: `Error el nombre de usuario ya esta en uso` });
+
         if (code === process.env.ADMIN_CODE) {
 
             role = await getRepository(RoleEty).findOne({
@@ -36,11 +43,10 @@ export const signup = async (req: Request, res: Response): Promise<Response> => 
             user.rol = role;
         }
 
-        //TODO Falta encryptar la contraseña y crear jwt
         const newUser = getRepository(UserEty).create(user);
-        await getRepository(UserEty).save(newUser);
+        const results = await getRepository(UserEty).save(newUser);
 
-        return res.status(200).json({ message: `Usuario ${usuario} registrado con éxito` });
+        return res.header('auth-token', await signToken(results.id)).status(200).json({ message: `Usuario ${usuario} registrado con éxito` });
     } catch (error) {
 
         if (error.code === "ER_DUP_ENTRY") return res.status(400).json({ error, message: `Error el nombre de usuario ya esta en uso` });
@@ -54,15 +60,17 @@ export const signin = async (req: Request, res: Response): Promise<Response> => 
     try {
         const { usuario, password } = req.body;
 
-        const userFound: User[] = await getRepository(UserEty).find({
-            select: ["usuario"], where: {
+        const userFound: User | undefined = await getRepository(UserEty).findOne({
+            select: ["id", "usuario", "password"], where: {
                 usuario
             }
-        })
+        });
 
-        if (userFound.length < 1) return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
+        if (!userFound) return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
 
-        return res.status(200).json(userFound);
+        if (!comparePassword(password, userFound.password)) return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
+
+        return res.header('auth-token', await signToken(userFound.id)).status(200).json({ id: userFound.id, usuario: userFound.usuario });
     } catch (error) {
 
         console.log(error);
@@ -73,8 +81,10 @@ export const signin = async (req: Request, res: Response): Promise<Response> => 
 
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
     try {
-        //TODO Falta crear Inner Join con Rol
-        const users: User[] = await getRepository(UserEty).find({ select: ["id", "usuario", "nombres", "apellidos"] });
+        const users: User[] = await getRepository(UserEty).find({
+            select: ["id", "usuario", "nombres", "apellidos", "fechaCreacion", "fechaActualizacion"],
+            relations: ["rol"],
+        });
 
         return res.status(200).json(users);
     } catch (error) {
@@ -87,8 +97,11 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
 export const getUserById = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { id } = req.params;
-        //TODO Falta crear Inner Join con Rol
-        const userFound: User | undefined = await getRepository(UserEty).findOne(id, { select: ["id", "usuario", "nombres", "apellidos"] })
+        const userFound: User | undefined = await getRepository(UserEty).findOne(
+            id, {
+            select: ["id", "usuario", "nombres", "apellidos", "fechaCreacion", 'fechaActualizacion'],
+            relations: ["rol"],
+        });
 
         if (!userFound) return res.status(404).json({ message: `Usuario no encontrado` });
 
@@ -98,4 +111,34 @@ export const getUserById = async (req: Request, res: Response): Promise<Response
         console.log(error);
         return res.status(400).json({ error, message: `Error al obtener al usuario` });
     }
+}
+
+
+async function existUser(usuario: string): Promise<boolean> {
+    const userFound: User | undefined = await getRepository(UserEty).findOne({
+        select: ["usuario"],
+        where: {
+            usuario
+        },
+    });
+
+    return userFound ? true : false;
+}
+
+async function encryptPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(saltRounds);
+
+    return await bcrypt.hash(password, salt);
+}
+
+async function comparePassword(receivedPassword: string, password: string): Promise<boolean> {
+    return await bcrypt.compare(password, receivedPassword);
+}
+
+async function signToken(id: number | undefined): Promise<string> {
+    const token: string = await jwt.sign({ id }, process.env.SECRET_KEY || 'SinTokenValido-1', {
+        expiresIn: "1d",
+    });
+
+    return token;
 }
