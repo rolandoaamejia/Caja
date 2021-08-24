@@ -1,5 +1,5 @@
 import express, { Application } from 'express';
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -39,7 +39,7 @@ app.use(express.urlencoded({ extended: false }));
 //* Routes
 app.use('/api', authRoutes);
 
-app.use((req: Request, res: Response): Response => {
+app.use((req: Request, res: Response, next: NextFunction): Response => {
     try {
         return res.json({ message: "No se encontró la ruta solicitada" });
     } catch (error) {
