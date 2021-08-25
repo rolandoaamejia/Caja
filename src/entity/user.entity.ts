@@ -31,6 +31,12 @@ export class Usuario {
     })
     apellidos: string;
 
+    @Column('boolean', {
+        nullable: true,
+        default: true
+    })
+    estado: boolean
+
     @ManyToOne(type => RoleEty)
     @JoinColumn()
     rol: RoleEty;

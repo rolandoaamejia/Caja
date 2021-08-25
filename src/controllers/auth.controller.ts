@@ -82,7 +82,7 @@ export const signin = async (req: Request, res: Response): Promise<Response> => 
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
     try {
         const users: User[] = await getRepository(UserEty).find({
-            select: ["id", "usuario", "nombres", "apellidos", "fechaCreacion", "fechaActualizacion"],
+            select: ["id", "usuario", "nombres", "apellidos", "estado", "fechaCreacion", "fechaActualizacion"],
             relations: ["rol"],
         });
 
@@ -99,7 +99,7 @@ export const getUserById = async (req: Request, res: Response): Promise<Response
         const { id } = req.params;
         const userFound: User | undefined = await getRepository(UserEty).findOne(
             id, {
-            select: ["id", "usuario", "nombres", "apellidos", "fechaCreacion", 'fechaActualizacion'],
+            select: ["id", "usuario", "nombres", "apellidos", "estado", "fechaCreacion", 'fechaActualizacion'],
             relations: ["rol"],
         });
 
@@ -110,6 +110,36 @@ export const getUserById = async (req: Request, res: Response): Promise<Response
 
         console.log(error);
         return res.status(400).json({ error, message: `Error al obtener al usuario` });
+    }
+}
+
+export const changeStateById = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { id } = req.params;
+        const userFound = await getRepository(UserEty).findOne(
+            id, {
+            select: ["id", "usuario", "nombres", "apellidos", "estado", "fechaCreacion", 'fechaActualizacion'],
+            relations: ["rol"],
+        });
+
+        if (!userFound) return res.status(404).json({ message: `Usuario no encontrado` });
+
+        const newUser = {
+            id: userFound.id,
+            usuario: userFound.usuario,
+            nombres: userFound.nombres,
+            apellidos: userFound.apellidos,
+            estado: userFound.estado ? false : true,
+        } as User;
+
+        getRepository(UserEty).merge(userFound, newUser);
+        await getRepository(UserEty).save(userFound);
+        return res.status(200).json({ message: `Se actualizo el estado del usuario ${userFound.usuario}` });
+
+    } catch (error) {
+
+        console.log(error);
+        return res.status(400).json({ error, message: `Error al cambiar el estado del usuario` });
     }
 }
 

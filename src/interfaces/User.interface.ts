@@ -6,6 +6,7 @@ export interface User {
     password: string;
     nombres: string;
     apellidos: string;
+    estado?: boolean;
     rol?: Role;
     fechaCreacion?: Date;
     fechaActualizacion?: Date;
