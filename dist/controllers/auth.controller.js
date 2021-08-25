@@ -8,21 +8,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserById = exports.getUsers = exports.signin = exports.signup = void 0;
 const typeorm_1 = require("typeorm");
 const user_entity_1 = require("../entity/user.entity");
 const role_entity_1 = require("../entity/role.entity");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const saltRounds = 10;
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { usuario, password, nombres, apellidos, code } = req.body;
         let user = {
             usuario,
-            password,
+            password: yield encryptPassword(password),
             nombres,
             apellidos
         };
         let role;
+        if (yield existUser(usuario))
+            return res.status(400).json({ message: `Error el nombre de usuario ya esta en uso` });
         if (code === process.env.ADMIN_CODE) {
             role = yield typeorm_1.getRepository(role_entity_1.Rol).findOne({
                 where: {
@@ -39,10 +47,9 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             user.rol = role;
         }
-        //TODO Falta encryptar la contraseña y crear jwt
         const newUser = typeorm_1.getRepository(user_entity_1.Usuario).create(user);
-        yield typeorm_1.getRepository(user_entity_1.Usuario).save(newUser);
-        return res.status(200).json({ message: `Usuario ${usuario} registrado con éxito` });
+        const results = yield typeorm_1.getRepository(user_entity_1.Usuario).save(newUser);
+        return res.header('Authorization', yield signToken(results.id)).status(200).json({ message: `Usuario ${usuario} registrado con éxito` });
     }
     catch (error) {
         if (error.code === "ER_DUP_ENTRY")
@@ -55,14 +62,16 @@ exports.signup = signup;
 const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { usuario, password } = req.body;
-        const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).find({
-            select: ["usuario"], where: {
+        const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).findOne({
+            select: ["id", "usuario", "password"], where: {
                 usuario
             }
         });
-        if (userFound.length < 1)
+        if (!userFound)
             return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
-        return res.status(200).json(userFound);
+        if (!comparePassword(password, userFound.password))
+            return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
+        return res.header('Authorization', yield signToken(userFound.id)).status(200).json({ id: userFound.id, usuario: userFound.usuario });
     }
     catch (error) {
         console.log(error);
@@ -72,8 +81,10 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.signin = signin;
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        //TODO Falta crear Inner Join con Rol
-        const users = yield typeorm_1.getRepository(user_entity_1.Usuario).find({ select: ["id", "usuario", "nombres", "apellidos"] });
+        const users = yield typeorm_1.getRepository(user_entity_1.Usuario).find({
+            select: ["id", "usuario", "nombres", "apellidos", "fechaCreacion", "fechaActualizacion"],
+            relations: ["rol"],
+        });
         return res.status(200).json(users);
     }
     catch (error) {
@@ -85,8 +96,10 @@ exports.getUsers = getUsers;
 const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        //TODO Falta crear Inner Join con Rol
-        const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).findOne(id, { select: ["id", "usuario", "nombres", "apellidos"] });
+        const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).findOne(id, {
+            select: ["id", "usuario", "nombres", "apellidos", "fechaCreacion", 'fechaActualizacion'],
+            relations: ["rol"],
+        });
         if (!userFound)
             return res.status(404).json({ message: `Usuario no encontrado` });
         return res.status(200).json(userFound);
@@ -97,4 +110,34 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserById = getUserById;
+function existUser(usuario) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).findOne({
+            select: ["usuario"],
+            where: {
+                usuario
+            },
+        });
+        return userFound ? true : false;
+    });
+}
+function encryptPassword(password) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const salt = yield bcrypt_1.default.genSalt(saltRounds);
+        return yield bcrypt_1.default.hash(password, salt);
+    });
+}
+function comparePassword(receivedPassword, password) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield bcrypt_1.default.compare(password, receivedPassword);
+    });
+}
+function signToken(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const token = yield jsonwebtoken_1.default.sign({ id }, process.env.SECRET_KEY || 'SinTokenValido-1', {
+            expiresIn: "1d",
+        });
+        return token;
+    });
+}
 //# sourceMappingURL=auth.controller.js.map

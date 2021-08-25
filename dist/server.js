@@ -49,7 +49,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 //* Routes
 app.use('/api', auth_routes_1.default);
-app.use((req, res) => {
+app.use((req, res, next) => {
     try {
         return res.json({ message: "No se encontró la ruta solicitada" });
     }

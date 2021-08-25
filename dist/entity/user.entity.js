@@ -54,7 +54,7 @@ __decorate([
     __metadata("design:type", String)
 ], Usuario.prototype, "apellidos", void 0);
 __decorate([
-    typeorm_1.OneToOne(type => role_entity_1.Rol),
+    typeorm_1.ManyToOne(type => role_entity_1.Rol),
     typeorm_1.JoinColumn(),
     __metadata("design:type", role_entity_1.Rol)
 ], Usuario.prototype, "rol", void 0);
