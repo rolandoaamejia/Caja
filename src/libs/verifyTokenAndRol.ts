@@ -57,6 +57,9 @@ export const verifyRolAdmin = async (req: Request, res: Response, next: NextFunc
 export const verifyRolAdminSignup = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { code } = req.body;
+        
+        if (code === process.env.ADMIN_CODE) return next();
+
         if (!req.header('Authorization')) return res.status(401).json({ message: `Acceso denegado` });
         const token: string = req.header('Authorization')?.split(" ")[1] || "";
         const payload = jwt.verify(token, process.env.SECRET_KEY || 'SinTokenValido-1') as Payload;
@@ -66,8 +69,6 @@ export const verifyRolAdminSignup = async (req: Request, res: Response, next: Ne
         }) as User;
 
         if (!userFound) return res.status(401).json({ message: `Acceso denegado` });
-
-        if (code === process.env.ADMIN_CODE) return next();
 
         const rol: string | undefined = userFound["rol"]?.nombre;
 
