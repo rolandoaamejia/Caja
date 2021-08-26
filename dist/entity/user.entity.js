@@ -54,6 +54,13 @@ __decorate([
     __metadata("design:type", String)
 ], Usuario.prototype, "apellidos", void 0);
 __decorate([
+    typeorm_1.Column('boolean', {
+        nullable: true,
+        default: true
+    }),
+    __metadata("design:type", Boolean)
+], Usuario.prototype, "estado", void 0);
+__decorate([
     typeorm_1.ManyToOne(type => role_entity_1.Rol),
     typeorm_1.JoinColumn(),
     __metadata("design:type", role_entity_1.Rol)

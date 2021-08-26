@@ -68,7 +68,8 @@ export const signin = async (req: Request, res: Response): Promise<Response> => 
 
         if (!userFound) return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
 
-        if (!comparePassword(password, userFound.password)) return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
+        const matchPassword = await comparePassword(password, userFound.password)
+        if (!matchPassword) return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
 
         return res.header('Authorization', await signToken(userFound.id)).status(200).json({ id: userFound.id, usuario: userFound.usuario });
     } catch (error) {
@@ -118,7 +119,7 @@ export const changeStateById = async (req: Request, res: Response): Promise<Resp
         const { id } = req.params;
         const userFound = await getRepository(UserEty).findOne(
             id, {
-            select: ["id", "usuario", "nombres", "apellidos", "estado", "fechaCreacion", 'fechaActualizacion'],
+            select: ["id", "usuario", "nombres", "apellidos", "estado"],
             relations: ["rol"],
         });
 
@@ -143,6 +144,110 @@ export const changeStateById = async (req: Request, res: Response): Promise<Resp
     }
 }
 
+export const putUserById = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { id } = req.params;
+        const { nombres, apellidos } = req.body;
+
+        const userFound = await getRepository(UserEty).findOne(
+            id, {
+            select: ["id", "usuario", "nombres", "apellidos",],
+            relations: ["rol"],
+        });
+
+        if (!userFound) return res.status(404).json({ message: `Usuario no encontrado` });
+
+        const newUser = {
+            id: userFound.id,
+            usuario: userFound.usuario,
+            nombres: nombres || userFound.nombres,
+            apellidos: apellidos || userFound.apellidos,
+        } as User;
+
+
+        getRepository(UserEty).merge(userFound, newUser);
+        await getRepository(UserEty).save(userFound);
+        return res.status(200).json({ message: `Se actualizo los datos del usuario ${userFound.usuario}` });
+    } catch (error) {
+
+        console.log(error);
+        return res.status(400).json({ error, message: `Error al actualizar los datos del usuario` });
+    }
+}
+
+export const putUserPasswordById = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { id } = req.params;
+        const { password, newPassword } = req.body;
+
+        const userFound = await getRepository(UserEty).findOne(
+            id, {
+            select: ["id", "password"]
+        });
+
+        if (!userFound) return res.status(404).json({ message: `Usuario no encontrado` });
+        console.log(userFound);
+
+        const matchPassword = await comparePassword(password, userFound.password)
+        if (!matchPassword) return res.status(400).json({ message: `La contraseña actual es incorrecta` });
+
+        const newUser = {
+            id: userFound.id,
+            password: await encryptPassword(newPassword),
+        } as User;
+
+        getRepository(UserEty).merge(userFound, newUser);
+        await getRepository(UserEty).save(userFound);
+        return res.status(200).json({ message: `Se actualizo la contraseña` });
+    } catch (error) {
+
+        console.log(error);
+        return res.status(400).json({ error, message: `Error al actualizar la contraseña` });
+    }
+}
+
+export const putUserPasswordAdminById = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { id } = req.params;
+        const { newPassword } = req.body;
+
+        const userFound = await getRepository(UserEty).findOne(
+            id, {
+            select: ["id", "usuario", "password"],
+            relations: ["rol"],
+        });
+
+        if (!userFound) return res.status(404).json({ message: `Usuario no encontrado` });
+
+        const newUser = {
+            id: userFound.id,
+            password: await encryptPassword(newPassword),
+        } as User;
+
+        getRepository(UserEty).merge(userFound, newUser);
+        await getRepository(UserEty).save(userFound);
+        return res.status(200).json({ message: `Se actualizo la contraseña del usuario ${userFound.usuario}` });
+    } catch (error) {
+
+        console.log(error);
+        return res.status(400).json({ error, message: `Error al actualizar la contraseña del usuario` });
+
+    }
+}
+
+export const deleteUserById = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { id } = req.params;
+        const results = await getRepository(UserEty).delete(id);
+
+        return res.status(200).json({ message: `Usuario eliminado con éxito` });
+    } catch (error) {
+
+        console.log(error);
+        return res.status(400).json({ error, message: `Error al eliminar al usuario` });
+    }
+}
+
 
 async function existUser(usuario: string): Promise<boolean> {
     const userFound: User | undefined = await getRepository(UserEty).findOne({
@@ -162,7 +267,7 @@ async function encryptPassword(password: string): Promise<string> {
 }
 
 async function comparePassword(receivedPassword: string, password: string): Promise<boolean> {
-    return await bcrypt.compare(password, receivedPassword);
+    return await bcrypt.compareSync(receivedPassword, password);
 }
 
 async function signToken(id: number | undefined): Promise<string> {

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getUsers = exports.signin = exports.signup = void 0;
+exports.deleteUserById = exports.putUserPasswordAdminById = exports.putUserPasswordById = exports.putUserById = exports.changeStateById = exports.getUserById = exports.getUsers = exports.signin = exports.signup = void 0;
 const typeorm_1 = require("typeorm");
 const user_entity_1 = require("../entity/user.entity");
 const role_entity_1 = require("../entity/role.entity");
@@ -69,7 +69,8 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         if (!userFound)
             return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
-        if (!comparePassword(password, userFound.password))
+        const matchPassword = yield comparePassword(password, userFound.password);
+        if (!matchPassword)
             return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
         return res.header('Authorization', yield signToken(userFound.id)).status(200).json({ id: userFound.id, usuario: userFound.usuario });
     }
@@ -82,7 +83,7 @@ exports.signin = signin;
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield typeorm_1.getRepository(user_entity_1.Usuario).find({
-            select: ["id", "usuario", "nombres", "apellidos", "fechaCreacion", "fechaActualizacion"],
+            select: ["id", "usuario", "nombres", "apellidos", "estado", "fechaCreacion", "fechaActualizacion"],
             relations: ["rol"],
         });
         return res.status(200).json(users);
@@ -97,7 +98,7 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const { id } = req.params;
         const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).findOne(id, {
-            select: ["id", "usuario", "nombres", "apellidos", "fechaCreacion", 'fechaActualizacion'],
+            select: ["id", "usuario", "nombres", "apellidos", "estado", "fechaCreacion", 'fechaActualizacion'],
             relations: ["rol"],
         });
         if (!userFound)
@@ -110,6 +111,121 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserById = getUserById;
+const changeStateById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).findOne(id, {
+            select: ["id", "usuario", "nombres", "apellidos", "estado"],
+            relations: ["rol"],
+        });
+        if (!userFound)
+            return res.status(404).json({ message: `Usuario no encontrado` });
+        const newUser = {
+            id: userFound.id,
+            usuario: userFound.usuario,
+            nombres: userFound.nombres,
+            apellidos: userFound.apellidos,
+            estado: userFound.estado ? false : true,
+        };
+        typeorm_1.getRepository(user_entity_1.Usuario).merge(userFound, newUser);
+        yield typeorm_1.getRepository(user_entity_1.Usuario).save(userFound);
+        return res.status(200).json({ message: `Se actualizo el estado del usuario ${userFound.usuario}` });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json({ error, message: `Error al cambiar el estado del usuario` });
+    }
+});
+exports.changeStateById = changeStateById;
+const putUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { nombres, apellidos } = req.body;
+        const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).findOne(id, {
+            select: ["id", "usuario", "nombres", "apellidos",],
+            relations: ["rol"],
+        });
+        if (!userFound)
+            return res.status(404).json({ message: `Usuario no encontrado` });
+        const newUser = {
+            id: userFound.id,
+            usuario: userFound.usuario,
+            nombres: nombres || userFound.nombres,
+            apellidos: apellidos || userFound.apellidos,
+        };
+        typeorm_1.getRepository(user_entity_1.Usuario).merge(userFound, newUser);
+        yield typeorm_1.getRepository(user_entity_1.Usuario).save(userFound);
+        return res.status(200).json({ message: `Se actualizo los datos del usuario ${userFound.usuario}` });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json({ error, message: `Error al actualizar los datos del usuario` });
+    }
+});
+exports.putUserById = putUserById;
+const putUserPasswordById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { password, newPassword } = req.body;
+        const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).findOne(id, {
+            select: ["id", "password"]
+        });
+        if (!userFound)
+            return res.status(404).json({ message: `Usuario no encontrado` });
+        console.log(userFound);
+        const matchPassword = yield comparePassword(password, userFound.password);
+        if (!matchPassword)
+            return res.status(400).json({ message: `La contraseña actual es incorrecta` });
+        const newUser = {
+            id: userFound.id,
+            password: yield encryptPassword(newPassword),
+        };
+        typeorm_1.getRepository(user_entity_1.Usuario).merge(userFound, newUser);
+        yield typeorm_1.getRepository(user_entity_1.Usuario).save(userFound);
+        return res.status(200).json({ message: `Se actualizo la contraseña` });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json({ error, message: `Error al actualizar la contraseña` });
+    }
+});
+exports.putUserPasswordById = putUserPasswordById;
+const putUserPasswordAdminById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { newPassword } = req.body;
+        const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).findOne(id, {
+            select: ["id", "usuario", "password"],
+            relations: ["rol"],
+        });
+        if (!userFound)
+            return res.status(404).json({ message: `Usuario no encontrado` });
+        const newUser = {
+            id: userFound.id,
+            password: yield encryptPassword(newPassword),
+        };
+        typeorm_1.getRepository(user_entity_1.Usuario).merge(userFound, newUser);
+        yield typeorm_1.getRepository(user_entity_1.Usuario).save(userFound);
+        return res.status(200).json({ message: `Se actualizo la contraseña del usuario ${userFound.usuario}` });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json({ error, message: `Error al actualizar la contraseña del usuario` });
+    }
+});
+exports.putUserPasswordAdminById = putUserPasswordAdminById;
+const deleteUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const results = yield typeorm_1.getRepository(user_entity_1.Usuario).delete(id);
+        return res.status(200).json({ message: `Usuario eliminado con éxito` });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json({ error, message: `Error al eliminar al usuario` });
+    }
+});
+exports.deleteUserById = deleteUserById;
 function existUser(usuario) {
     return __awaiter(this, void 0, void 0, function* () {
         const userFound = yield typeorm_1.getRepository(user_entity_1.Usuario).findOne({
@@ -129,7 +245,7 @@ function encryptPassword(password) {
 }
 function comparePassword(receivedPassword, password) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield bcrypt_1.default.compare(password, receivedPassword);
+        return yield bcrypt_1.default.compareSync(receivedPassword, password);
     });
 }
 function signToken(id) {
