@@ -24,6 +24,8 @@ export const tokenValidation = async (req: Request, res: Response, next: NextFun
 
         if (!userFound) return res.status(401).json({ message: `Acceso denegado` });
 
+        req.userId = payload.id;
+
         next();
     } catch (error) {
         console.log(error);
@@ -46,6 +48,8 @@ export const verifyRolAdmin = async (req: Request, res: Response, next: NextFunc
         const rol: string | undefined = userFound["rol"]?.nombre;
 
         if (rol !== "Administrador") return res.status(401).json({ message: `Acceso denegado se necesitan permisos de administrador` });
+
+        req.userId = payload.id;
 
         next();
     } catch (error) {
@@ -73,6 +77,8 @@ export const verifyRolAdminSignup = async (req: Request, res: Response, next: Ne
         const rol: string | undefined = userFound["rol"]?.nombre;
 
         if (rol !== "Administrador") return res.status(401).json({ message: `Acceso denegado se necesitan permisos de administrador` });
+
+        req.userId = payload.id;
 
         next();
     } catch (error) {

@@ -1,9 +1,9 @@
 import app from './server';
 
-function main() {
+async function main() {
     const port: number = app.get('port');
 
-    app.listen(port);
+    await app.listen(port);
     console.log(`Escuchando en el puerto ${port}`);
 }
 

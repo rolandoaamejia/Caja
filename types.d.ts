@@ -1,5 +1,7 @@
-// declare namespace JsonWebToken {
-//     export interface JwtPayload {
-//         id: number;
-//     }
-// }
+declare namespace Express {
+
+    export interface Request {
+        userId: number;
+    }
+
+}

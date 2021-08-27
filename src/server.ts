@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import helmet from 'helmet';
+import path from 'path';
 import * as dotenv from 'dotenv';
 import { createConnection } from 'typeorm';
 import "reflect-metadata";
@@ -11,6 +12,8 @@ import { createRoles } from './libs/initialSetup.lib';
 
 
 import authRoutes from './routes/auth.routes';
+import docRoutes from './routes/document.routes';
+
 
 dotenv.config();
 
@@ -36,8 +39,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 
+//* Ruta publica para los archivos
+app.use('/public', express.static(path.resolve('public')));
+
 //* Routes
 app.use('/api', authRoutes);
+app.use('/api/doc', docRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction): Response => {
     try {
