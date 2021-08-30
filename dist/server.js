@@ -26,11 +26,13 @@ const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
+const path_1 = __importDefault(require("path"));
 const dotenv = __importStar(require("dotenv"));
 const typeorm_1 = require("typeorm");
 require("reflect-metadata");
 const initialSetup_lib_1 = require("./libs/initialSetup.lib");
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
+const document_routes_1 = __importDefault(require("./routes/document.routes"));
 dotenv.config();
 const app = express_1.default();
 //* Settings
@@ -47,8 +49,11 @@ app.use(cors_1.default());
 app.use(morgan_1.default('dev'));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
+//* Ruta publica para los archivos
+app.use('/public', express_1.default.static(path_1.default.resolve('public')));
 //* Routes
 app.use('/api', auth_routes_1.default);
+app.use('/api/doc', document_routes_1.default);
 app.use((req, res, next) => {
     try {
         return res.json({ message: "No se encontró la ruta solicitada" });
