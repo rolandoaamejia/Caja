@@ -1,1 +1,50 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Importing Bootstrap SCSS file. */
+// @import "~bootstrap/scss/bootstrap";
+
+body {
+
+}
+.bg-image{
+  background-image: url('./assets/img/caja.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+}
+
+.card-sm {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vertical-center {
+  min-height: 90.5%;
+  min-height: 90.5vh;
+
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  //   .card-sm{
+
+  //   }
+}
+
+.footer {
+  padding: 10px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.invalid-div {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 90%;
+  color: #f55252;
+}

@@ -4,9 +4,9 @@ const router: Router = Router();
 import { signup, signin, getUsers, getUserById, changeStateById, putUserById, putUserPasswordById, putUserPasswordAdminById, deleteUserById } from '../controllers/auth.controller';
 import { tokenValidation, verifyRolAdmin, verifyRolAdminSignup } from '../libs/verifyTokenAndRol';
 
-router.post('/auth/signup', [verifyRolAdminSignup, signup]);
 router.post('/auth/signin', signin);
 
+router.post('/users/signup', [verifyRolAdminSignup, signup]);
 router.get('/users', [verifyRolAdmin, getUsers]);
 router.get('/users/:id', [verifyRolAdmin, getUserById]);
 

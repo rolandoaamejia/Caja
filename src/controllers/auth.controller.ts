@@ -46,7 +46,9 @@ export const signup = async (req: Request, res: Response): Promise<Response> => 
         const newUser = getRepository(UserEty).create(user);
         const results = await getRepository(UserEty).save(newUser);
 
-        return res.header('Authorization', await signToken(results.id)).status(200).json({ message: `Usuario ${usuario} registrado con éxito` });
+        // return res.header('Authorization', await signToken(results.id)).status(200).json({ message: `Usuario ${usuario} registrado con éxito` });
+
+        return res.status(200).json({ message: `Usuario ${usuario} registrado con éxito` });
     } catch (error) {
 
         if (error.code === "ER_DUP_ENTRY") return res.status(400).json({ error, message: `Error el nombre de usuario ya esta en uso` });
@@ -71,7 +73,9 @@ export const signin = async (req: Request, res: Response): Promise<Response> => 
         const matchPassword = await comparePassword(password, userFound.password)
         if (!matchPassword) return res.status(400).json({ message: `Error el nombre de usuario o contraseña son incorrectos` });
 
-        return res.header('Authorization', await signToken(userFound.id)).status(200).json({ id: userFound.id, usuario: userFound.usuario });
+        // return res.header('Authorization', await signToken(userFound.id)).status(200).json({ id: userFound.id, usuario: userFound.usuario });
+        return res.status(200).json({ usuario: userFound.usuario, token: await signToken(userFound.id) });
+
     } catch (error) {
 
         console.log(error);
