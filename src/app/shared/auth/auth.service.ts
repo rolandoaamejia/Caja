@@ -18,11 +18,15 @@ export class AuthService {
   public getToken(): string | undefined {
     return localStorage.getItem('token') || undefined;
   }
+  public getRol(): string | undefined {
+    return localStorage.getItem('rol') || undefined;
+  }
 
-  private setToken(token: string | undefined, usuario: string): void {
+  private setToken(token: string | undefined, usuario: string, rol: string): void {
     if (token && usuario) {
       localStorage.setItem('token', token);
       localStorage.setItem('usuario', usuario);
+      localStorage.setItem('rol', rol);
 
       this.router.navigate([`dashboard/home`])
     }
@@ -37,11 +41,15 @@ export class AuthService {
     return this.getToken() ? true : false;
   }
 
+  public isAdmin(): boolean {
+    return this.getRol() === 'Administrador' ? true : false;
+  }
+
   public postSignin(usuario: Usuario): Observable<any> {
     // let headers = new HttpHeaders()
     // headers = headers.append('Authorization', 'undefined')
     return this.http.post<any>(`${this.endPoint}/auth/signin`, usuario).pipe(tap((res) => {
-      this.setToken(res?.token, res.usuario);
+      this.setToken(res?.token, res?.usuario, res?.rol);
     }))
   }
 

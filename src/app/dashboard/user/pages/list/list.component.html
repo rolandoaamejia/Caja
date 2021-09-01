@@ -1,0 +1,96 @@
+<div class="row vertical-center">
+    <div class="col-md-12 card-sm">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h4 class="text-white text-center">
+                    Usuarios
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <form>
+                    <div class="form-group form-inline">
+                        <button class="btn btn-primary form-control mr-auto" (click)="openModals('signup')" placement="top"
+                            ngbTooltip="Agregar usuario">Agregar</button>
+                        <input class="form-control m-2" type="text" [formControl]="filterControl" placement="top"
+                            ngbTooltip="Buscar usuario" placeholder="Buscar..." />
+                    </div>
+                </form>
+                <hr>
+                <div class="table-responsive-xl">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <!-- <th>#</th> -->
+                                <th>Usuario</th>
+                                <th>Nombre</th>
+                                <th>Estado</th>
+                                <th>Rol</th>
+                                <th>Ultima modificación</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            <tr *ngFor="let u of filteredOptions$ | async | paginator:pageSize:page; index as i">
+                                <!-- <th scope="row">{{ area.id }}</th> -->
+                                <td>
+                                    <ngb-highlight [result]="u.usuario" [term]="filterControl.value"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="u.nombres +' '+ u.apellidos" [term]="filterControl.value">
+                                    </ngb-highlight>
+                                </td>
+                                <td>
+                                    <ng-container *ngIf="u.estado; else elseTemplate">
+                                        <span class="text-success">
+                                            Activo
+                                        </span>
+                                    </ng-container>
+                                    <ng-template #elseTemplate>
+                                        <span class="text-danger">
+                                            Inactivo
+                                        </span>
+                                    </ng-template>
+
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="u.rol.nombre" [term]="filterControl.value"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="u.fechaActualizacion | date:'yyy-MM-dd'"
+                                        [term]="filterControl.value"></ngb-highlight>
+                                </td>
+                                <td class="options">
+                                    <button class="btn btn-outline-secondary m-1" placement="top"
+                                        ngbTooltip="Editar usuario" (click)="openModals('editUser',u)">
+                                        <i class="fas fa-user-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-info m-1" placement="top"
+                                        ngbTooltip="Cambiar contraseña" (click)="openModals('editPassword',u)">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning m-1" placement="top"
+                                        ngbTooltip="Cambiar el estado del usuario" (click)="changeState(u.id)">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger m-1" placement="top"
+                                        ngbTooltip="Eliminar usuario" (click)="openModals('deleteUser',u)"
+                                        [disabled]="u.estado"
+                                        >
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex justify-content-center p-2">
+                        <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize">
+                        </ngb-pagination>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

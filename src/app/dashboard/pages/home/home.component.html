@@ -1,1 +1,22 @@
-<p>home works!</p>
+<div class="row vertical-center">
+    <div class="col-md-12 card-sm">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h4 class="text-white text-center">
+                    Menu
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <ng-container *ngIf="authService.isAdmin(); else elseMenu">
+                    <app-menu-admin></app-menu-admin>
+                </ng-container>
+                <ng-template #elseMenu>
+                    <app-menu></app-menu>
+                </ng-template>
+
+
+            </div>
+        </div>
+    </div>
+</div>

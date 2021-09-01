@@ -1,0 +1,61 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Agregar usuario</h4>
+    <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="p-2">
+        <img class="card-img-top" src="/assets/img/logo2.png" width="375" height="120" alt="Logo">
+    </div>
+    <form class="p-2" [formGroup]="myForm" novalidate>
+        <div class="form-group">
+            <label for="inputUser">Nombre de usuario</label>
+            <input type="text" formControlName="usuario" class="form-control" id="inputUser"
+                aria-describedby="emailHelp" placeholder="Ingrese el usuario" required
+                [class.is-valid]="myForm.get('usuario')?.valid" [class.is-invalid]="myForm.get('usuario')?.invalid &&
+                (myForm.get('usuario')?.dirty ||
+                  myForm.get('usuario')?.touched)">
+            <div class="invalid-feedback" *ngIf="myForm.get('usuario')?.hasError('required')">
+                Campo requerido
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword">Contraseña</label>
+            <input type="password" formControlName="password" class="form-control" id="inputPassword"
+                placeholder="Ingrese la contraseña" required [class.is-valid]="myForm.get('password')?.valid"
+                [class.is-invalid]="myForm.get('password')?.invalid &&
+                (myForm.get('password')?.dirty ||
+                  myForm.get('password')?.touched)">
+            <div class="invalid-feedback" *ngIf="myForm.get('password')?.hasError('required')">
+                Campo requerido
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputnombres">Nombres</label>
+            <input type="text" formControlName="nombres" class="form-control" id="inputnombres"
+                aria-describedby="emailHelp" placeholder="Ingrese los nombres" required
+                [class.is-valid]="myForm.get('nombres')?.valid" [class.is-invalid]="myForm.get('nombres')?.invalid &&
+                (myForm.get('nombres')?.dirty ||
+                  myForm.get('nombres')?.touched)">
+            <div class="invalid-feedback" *ngIf="myForm.get('nombres')?.hasError('required')">
+                Campo requerido
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputapellidos">Apellidos</label>
+            <input type="text" formControlName="apellidos" class="form-control" id="inputapellidos"
+                aria-describedby="emailHelp" placeholder="Ingrese los apellidos" required
+                [class.is-valid]="myForm.get('apellidos')?.valid" [class.is-invalid]="myForm.get('apellidos')?.invalid &&
+                (myForm.get('apellidos')?.dirty ||
+                  myForm.get('apellidos')?.touched)">
+            <div class="invalid-feedback" *ngIf="myForm.get('apellidos')?.hasError('required')">
+                Campo requerido
+            </div>
+        </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="signup()">Agregar</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancelar</button>
+ </div>
