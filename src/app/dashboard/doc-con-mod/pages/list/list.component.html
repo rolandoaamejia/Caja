@@ -1,0 +1,154 @@
+<div class="row vertical-center">
+    <div class="col-md-12 card-sm">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h4 class="text-white text-center">
+                    Conciliación cuenta de cheques
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <form>
+                    <div class="form-group form-inline">
+                        <button class="btn btn-primary form-control mr-auto" (click)="openModals('uploadDoc')"
+                            placement="top" ngbTooltip="Subir o actualizar un documento"><i
+                                class="fas fa-file-upload mr-1"></i>Subir documento</button>
+                    </div>
+                </form>
+                <form class="form-inline">
+                    <div class="">
+                        <div class="form-group hidden">
+                            <div class="input-group">
+                                <input name="datepicker" class="form-control" ngbDatepicker #datepicker="ngbDatepicker"
+                                    [autoClose]="'outside'" (dateSelect)="onDateSelection($event)" [displayMonths]="2"
+                                    [dayTemplate]="t" outsideDays="hidden" [startDate]="fromDate!" tabindex="-1" hidden>
+                                <ng-template #t let-date let-focused="focused">
+                                    <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+                                        [class.faded]="isHovered(date) || isInside(date)"
+                                        (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                        {{ date.day }}
+                                    </span>
+                                </ng-template>
+                            </div>
+                        </div>
+                        <div class="form-group m-1" hidden>
+                            <div class="input-group">
+                                <input #dpFromDate class="form-control" placeholder="yyyy-mm-dd" name="dpFromDate"
+                                    [value]="formatter.format(fromDate)"
+                                    (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+                            </div>
+                        </div>
+                        <div class="form-group m-1" hidden>
+                            <div class="input-group">
+                                <input #dpToDate class="form-control" placeholder="yyyy-mm-dd" name="dpToDate"
+                                    [value]="formatter.format(toDate)"
+                                    (input)="toDate = validateInput(toDate, dpToDate.value)"
+                                    (click)="datepicker.toggle()">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-primary calendar" type="button"
+                                        (click)="getDocuments()" placement="top" ngbTooltip="Actualizar recepciones">
+                                        <i class="fas fa-sync"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Por mostrar -->
+                        <div class="form-group mb-2" style="cursor: pointer;">
+                            <div class="input-group mb-0">
+                                <div class="form-control" (click)="datepicker.toggle()" placement="top"
+                                    ngbTooltip="Rango de fechas" [class.is-invalid]="!toDate">
+                                    {{formatter.format(fromDate) +' - '+
+                                    formatter.format(toDate)}}</div>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-primary calendar" type="button"
+                                        (click)="getDocuments()" [disabled]="!toDate" placement="top"
+                                        ngbTooltip="Actualizar documentos"><i class="fas fa-sync"></i></button>
+                                </div>
+                            </div>
+                            <div class="invalid-div" *ngIf="!toDate">
+                                Debe seleccionar un rango de fechas
+                            </div>
+                        </div>
+                    </div>
+                    <input class="form-control m-2 ml-auto" type="text" [formControl]="filterControl" placement="top"
+                        ngbTooltip="Buscar usuario" placeholder="Buscar..." />
+                </form>
+                <!-- <hr> -->
+                <section class="pt-5 pb-5">
+                    <div class="container">
+                        <div class="row d-flex">
+                            <ng-container
+                                *ngIf="(filteredOptions$ | async | paginator:pageSize:page).length<1; else elseEmpty">
+                                <div class="alert alert-warning col-12" role="alert">
+
+                                    <div *ngIf="filterControl.value">
+                                        No se encontraron Documentos en la búsqueda: <strong>
+                                            {{filterControl.value}}</strong>
+                                    </div>
+                                    <div *ngIf="documents.length<1">
+                                        No se encontraron Documentos en este rango de fechas
+                                    </div>
+
+                                </div>
+                            </ng-container>
+                            <ng-template #elseEmpty>
+                                <div class="col-12 col-md-4 mb-4 mt-2"
+                                    *ngFor="let d of filteredOptions$ | async | paginator:pageSize:page; index as i">
+                                    <div class="card  h-100 border-light  bg-light shadow">
+                                        <div class="card-body d-flex-row">
+                                            <blockquote class="blockquote mb-4 pb-2">
+                                                <p class="mb-0 font-weight-bold text-center"><img
+                                                        src="assets/img/xlsx.png" width="50" sizes="50"
+                                                        alt="xlsx image"></p>
+                                                <footer class="text-center mt-1">{{d.codigo| uppercase}}</footer>
+                                            </blockquote>
+                                            <p class="card-text text-left">
+                                                <strong>
+                                                    Banco:
+                                                </strong>
+                                                <ngb-highlight [result]="d.banco" [term]="filterControl.value">
+                                                </ngb-highlight>
+                                            </p>
+                                            <p class="card-text text-left">
+                                                <strong>
+                                                    Cuenta:
+                                                </strong>
+                                                <ngb-highlight [result]="d.cuenta" [term]="filterControl.value">
+                                                </ngb-highlight>
+
+                                            </p>
+                                            <p class="card-text text-left">
+                                                <strong>
+                                                    Fecha:
+                                                </strong>
+                                                <ngb-highlight [result]="d.fechaDocumento | date:'yyy-MM-dd'"
+                                                    [term]="filterControl.value"></ngb-highlight>
+
+
+                                            </p>
+                                            <span class="mb-3 text-center" style="font-size: 14px;">Ultima modificación:
+                                                {{d.fechaActualizacion |
+                                                date:'yyy-MM-dd'}}</span>
+                                            <div class="w-100 pb-1"></div>
+                                            <div class="d-flex align-items-center align-self-center">
+                                                <button class="btn btn-block btn-success"
+                                                    (click)="downloadXLSX(d.codigo)">
+                                                    <i class="fas fa-file-download"></i> Descargar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+
+
+                        </div>
+                    </div>
+                </section>
+                <div class="d-flex justify-content-center p-2">
+                    <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize">
+                    </ngb-pagination>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

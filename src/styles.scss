@@ -4,14 +4,13 @@
 // @import "~bootstrap/scss/bootstrap";
 
 body {
-
-}
-.bg-image{
-  background-image: url('./assets/img/caja.png');
+  background-image: url("./assets/img/caja.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   width: 100%;
+}
+.bg-image {
 }
 
 .card-sm {
@@ -20,8 +19,8 @@ body {
 }
 
 .vertical-center {
-  min-height: 90.5%;
-  min-height: 90.5vh;
+  min-height: 85%;
+  min-height: 85vh;
 
   display: flex;
   align-items: center;
@@ -47,4 +46,29 @@ body {
   margin-top: 0.25rem;
   font-size: 90%;
   color: #f55252;
+}
+
+
+.form-group.hidden {
+  width: 0;
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+.custom-day {
+  text-align: center;
+  padding: 0.185rem 0.25rem;
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+}
+.custom-day.focused {
+  background-color: #e6e6e6;
+}
+.custom-day.range, .custom-day:hover {
+  background-color: rgb(2, 117, 216);
+  color: white;
+}
+.custom-day.faded {
+  background-color: rgba(2, 117, 216, 0.5);
 }

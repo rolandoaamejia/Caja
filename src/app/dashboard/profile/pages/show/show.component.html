@@ -1,0 +1,61 @@
+<div class="row vertical-center">
+    <div class="col-md-8 card-sm">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h4 class="text-white text-center">
+                    Perfil
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <div class="p-2">
+                    <div class="form-group row">
+                        <label for="usuario" class="col-sm-4 col-form-label"><strong>Usuario:</strong></label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly class="form-control-plaintext" id="usuario"
+                               [value]="usuario?.usuario">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="nombre" class="col-sm-4 col-form-label"><strong>Nombre:</strong></label>
+                        <div class="col-sm-8">
+                            <input type="text" readonly class="form-control-plaintext" id="nombre"
+                               [value]="usuario?.nombres +' '+ usuario?.apellidos">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row-md-12">
+                    <form class="p-2" [formGroup]="myForm" novalidate>
+                        <div class="form-group">
+                            <label for="inputUser">Contraseña actual</label>
+                            <input type="password" formControlName="password" class="form-control" id="inputUser"
+                                aria-describedby="emailHelp" placeholder="Ingrese su contraseña actual" required
+                                [class.is-valid]="myForm.get('password')?.valid" [class.is-invalid]="myForm.get('password')?.invalid &&
+                                (myForm.get('password')?.dirty ||
+                                  myForm.get('password')?.touched)">
+                            <div class="invalid-feedback" *ngIf="myForm.get('password')?.hasError('required')">
+                                Campo requerido
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword">Nueva contraseña</label>
+                            <input type="password" formControlName="newPassword" class="form-control" id="inputnewPassword"
+                                placeholder="Ingrese su contraseña" required [class.is-valid]="myForm.get('newPassword')?.valid"
+                                [class.is-invalid]="myForm.get('newPassword')?.invalid &&
+                                (myForm.get('newPassword')?.dirty ||
+                                  myForm.get('newPassword')?.touched)">
+                            <div class="invalid-feedback" *ngIf="myForm.get('newPassword')?.hasError('required')">
+                                Campo requerido
+                            </div>
+                        </div>
+    
+                        <button class="btn btn-block btn-primary mt-4" [disabled]="myForm.invalid"
+                            (click)="onSubmit()">Cambiar contraseña</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

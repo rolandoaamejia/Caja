@@ -10,6 +10,7 @@ import { TokenInterceptorService } from './shared/interceptors/token-interceptor
 
 
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     BrowserAnimationsModule,
     SharedModule,
     HttpClientModule,
+    NgbModule
   ],
   providers: [
     {

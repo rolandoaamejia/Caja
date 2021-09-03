@@ -6,13 +6,15 @@ import { ToastrModule } from "ngx-toastr";
 import { Error404Component } from "./components/error404/error404.component";
 import { FooterComponent } from "./components/footer/footer.component";
 import { NavbarComponent } from "./components/navbar/navbar.component";
+import { PaginatorPipe } from './pipes/paginator.pipe';
 
 
 @NgModule({
   declarations: [
     Error404Component,
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    PaginatorPipe
   ],
   exports: [
     NavbarComponent,
@@ -20,6 +22,9 @@ import { NavbarComponent } from "./components/navbar/navbar.component";
     ToastrModule,
     ReactiveFormsModule,
     FormsModule,
+    PaginatorPipe,
+    NgbModule
+    
   ],
   imports: [
     CommonModule,
@@ -34,7 +39,8 @@ import { NavbarComponent } from "./components/navbar/navbar.component";
 
     }),
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    NgbModule
   ],
 
 })

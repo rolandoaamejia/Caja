@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">Eliminar documento {{documento?.codigo | uppercase}}</h4>
+  <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p><strong>¿Esta seguro que desea eliminar el documento del usuario <span class="text-primary">{{usuario?.nombres}} {{usuario?.apellidos}}</span>?</strong>
+  </p>
+  <p>Toda la información asociada a este documento se eliminará de forma permanente.
+    <span class="text-danger">Esta operación no se puede deshacer.</span>
+  </p>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" (click)="delete()">Si, eliminar</button>
+  <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">No, cancelar</button>
+</div>

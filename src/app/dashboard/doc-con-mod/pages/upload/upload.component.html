@@ -1,0 +1,75 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Conciliación cuenta de cheques</h4>
+    <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="p-2">
+        <img class="card-img-top" src="/assets/img/logo2.png" width="375" height="120" alt="Logo">
+    </div>
+    <form class="p-2" [formGroup]="myForm" novalidate>
+        <div class="form-group">
+            <label for="inputCuenta">Cuenta</label>
+            <input type="text" formControlName="cuenta" class="form-control" id="inputCuenta"
+                aria-describedby="emailHelp" placeholder="Ingrese el cuenta" required
+                [class.is-valid]="myForm.get('cuenta')?.valid" [class.is-invalid]="myForm.get('cuenta')?.invalid &&
+                (myForm.get('cuenta')?.dirty ||
+                  myForm.get('cuenta')?.touched)">
+            <div class="invalid-feedback" *ngIf="myForm.get('cuenta')?.hasError('required')">
+                Campo requerido
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputBanco">Banco</label>
+            <input type="text" formControlName="banco" class="form-control" id="inputBanco" aria-describedby="emailHelp"
+                placeholder="Ingrese el banco" required [class.is-valid]="myForm.get('banco')?.valid"
+                [class.is-invalid]="myForm.get('banco')?.invalid &&
+                (myForm.get('banco')?.dirty ||
+                  myForm.get('banco')?.touched)">
+            <div class="invalid-feedback" *ngIf="myForm.get('banco')?.hasError('required')">
+                Campo requerido
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputFechaDoc">Fecha del documento</label>
+            <div class="input-group">
+                <input class="form-control" placeholder="yyyy-mm-dd" name="dp" formControlName="fechaDocumento"
+                    ngbDatepicker #d="ngbDatepicker" [class.is-invalid]="myForm.get('fechaDocumento')?.invalid &&
+                    (myForm.get('fechaDocumento')?.dirty ||
+                      myForm.get('fechaDocumento')?.touched)"
+                    [class.is-valid]="myForm.get('fechaDocumento')?.valid && myForm.get('fechaDocumento')?.dirty"
+                    placement="r">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-primary calendar" (click)="d.toggle()" type="button">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="invalid-div" *ngIf="
+        myForm.get('fechaDocumento')?.hasError('required') &&
+        (myForm.get('fechaDocumento')?.dirty || myForm.get('fechaDocumento')?.touched)
+      ">
+                Campo requerido
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="inputGroupFileDocumento" name="documento"
+                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    (change)="onFileChanged($event)" formControlName="documento"
+                    [class.is-valid]="myForm.get('documento')?.invalid"
+                    [class.is-invalid]="
+                  (myForm.get('documento')?.invalid) && (myForm.get('documento')?.dirty || myForm.get('documento')?.touched)" required />
+                <label class="custom-file-label" for="inputGroupFileDocumento" aria-describedby="inputGroupFileAddon02"
+                    data-browse="Buscar">{{ labelSelectedFileImage }}</label>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="upload()" [disabled]="myForm.invalid"><i
+            class="fas fa-file-upload mr-1"></i> Subir o actualizar</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">
+        cancelar</button>
+</div>

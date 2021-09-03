@@ -1,0 +1,62 @@
+<div class="row vertical-center">
+    <div class="col-md-12 card-sm">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h4 class="text-white text-center">
+                    Conciliación cuenta de cheques
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <form>
+                    <div class="form-group form-inline">
+                        <button class="btn btn-primary form-control mr-auto" (click)="openModals('signup')" placement="top"
+                            ngbTooltip="Agregar usuario">Agregar</button>
+                        <input class="form-control m-2" type="text" [formControl]="filterControl" placement="top"
+                            ngbTooltip="Buscar usuario" placeholder="Buscar..." />
+                    </div>
+                </form>
+                <hr>
+                <div class="table-responsive-xl">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <!-- <th>#</th> -->
+                                <th>Usuario</th>
+                                <th>Nombre</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            <tr *ngFor="let u of filteredOptions$ | async | paginator:pageSize:page; index as i">
+                                <!-- <th scope="row">{{ area.id }}</th> -->
+                                <td>
+                                    <ngb-highlight [result]="u.usuario" [term]="filterControl.value"></ngb-highlight>
+                                </td>
+                                <td>
+                                    <ngb-highlight [result]="u.nombres +' '+ u.apellidos" [term]="filterControl.value">
+                                    </ngb-highlight>
+                                </td>
+                                <td class="options">
+                                    <a class="btn btn-outline-secondary m-1"
+                                    [routerLink]="[ 'list/', u.id ]"
+                                    >
+                                        Ver documentos
+                                        <i class="fas fa-file-alt ml-1"></i>
+                                    </a>
+                                   
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex justify-content-center p-2">
+                        <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize">
+                        </ngb-pagination>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
