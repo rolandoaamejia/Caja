@@ -10,10 +10,9 @@
             <div class="card-body">
                 <form>
                     <div class="form-group form-inline">
-                        <button class="btn btn-primary form-control mr-auto" (click)="openModals('signup')"
-                            placement="top" ngbTooltip="Agregar usuario">Agregar</button>
-                        <input class="form-control m-2" type="text" [formControl]="filterControl" placement="top"
-                            ngbTooltip="Buscar usuario" placeholder="Buscar..." />
+
+                        <input class="form-control m-2 ml-auto" type="text" [formControl]="filterControl"
+                            placement="top" ngbTooltip="Buscar usuario" placeholder="Buscar..." />
                     </div>
                 </form>
                 <hr>
@@ -27,7 +26,7 @@
                                 <th>Estado</th>
                                 <th>Rol</th>
                                 <th>Ultima modificación</th>
-                                <th>Opciones</th>
+
                             </tr>
                         </thead>
                         <tbody class="">
@@ -60,25 +59,7 @@
                                     <ngb-highlight [result]="u.fechaActualizacion | date:'yyy-MM-dd'"
                                         [term]="filterControl.value"></ngb-highlight>
                                 </td>
-                                <td class="options">
-                                    <button class="btn btn-outline-secondary m-1" placement="top"
-                                        ngbTooltip="Editar usuario" (click)="openModals('editUser',u)">
-                                        <i class="fas fa-user-edit"></i>
-                                    </button>
-                                    <button class="btn btn-outline-info m-1" placement="top"
-                                        ngbTooltip="Cambiar contraseña" (click)="openModals('editPassword',u)">
-                                        <i class="fas fa-key"></i>
-                                    </button>
-                                    <button class="btn btn-outline-warning m-1" placement="top"
-                                        ngbTooltip="Cambiar el estado del usuario" (click)="changeState(u.id)">
-                                        <i class="fas fa-exchange-alt"></i>
-                                    </button>
-                                    <button class="btn btn-outline-danger m-1" placement="top"
-                                        ngbTooltip="Eliminar usuario" (click)="openModals('deleteUser',u)"
-                                        [disabled]="u.estado || ( u.usuario === getUserNow())">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
+
                             </tr>
                         </tbody>
                     </table>

@@ -21,12 +21,8 @@ const routes: Routes = [
     loadChildren: () => import('./dashboard/dashboard.module').then(modele => modele.DashboardModule)
   },
   {
-    path: 'page-not-found',
-    component: Error404Component
-  },
-  {
     path: '**',
-    redirectTo: 'page-not-found'
+    redirectTo: 'dashboard'
   },
 ];
 

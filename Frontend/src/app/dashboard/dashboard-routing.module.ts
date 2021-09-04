@@ -38,13 +38,6 @@ const routes: Routes = [
           ),
       },
       {
-        path: "profile",
-        loadChildren: () =>
-          import("./profile/profile.module").then(
-            (modele) => modele.ProfileModule
-          ),
-      },
-      {
         path: "docs/conciliation",
         loadChildren: () =>
           import("./doc-con-mod/doc-con-mod.module").then(

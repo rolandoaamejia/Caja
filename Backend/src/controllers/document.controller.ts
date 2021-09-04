@@ -142,12 +142,11 @@ export const getDocumentsConAdmin = async (req: Request, res: Response): Promise
             .select("id, codigo, cuenta, banco, fechaDocumento, fechaCreacion, fechaActualizacion")
             .where("fechaActualizacion >= :start", { start })
             .andWhere("fechaActualizacion <= :end", { end })
-            .andWhere("usuarioId = :usuario", { usuario: id })
+            // .andWhere("usuarioId = :usuario", { usuario: id })
             .execute() as DocumentCon[];
 
         return res.status(200).json(documentsFound);
     } catch (error) {
-
         console.log(error);
         return res.status(400).json({ error, message: `Error al obtener los documentos conciliación cuenta de cheques` });
     }
@@ -364,7 +363,7 @@ export const getDocumentsArq = async (req: Request, res: Response): Promise<Resp
             .select("id, codigo, cuenta, banco, oficina, responsable, fechaDocumento, fechaCreacion, fechaActualizacion")
             .where("fechaActualizacion >= :start", { start })
             .andWhere("fechaActualizacion <= :end", { end })
-            .andWhere("usuarioId = :usuario", { usuario: req.userId })
+            // .andWhere("usuarioId = :usuario", { usuario: req.userId })
             .execute() as DocumentArq[];
 
         return res.status(200).json(documentsFound);

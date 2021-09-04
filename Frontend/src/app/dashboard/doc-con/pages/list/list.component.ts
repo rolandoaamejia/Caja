@@ -10,9 +10,11 @@ import { startWith, map } from 'rxjs/operators';
 import { DocConService } from '../../../../shared/services/doc-con.service';
 import { Usuario } from '../../../../shared/interfaces/usuario';
 import { DeleteComponent } from '../delete/delete.component';
+import { UploadComponent } from 'src/app/dashboard/doc-con-mod/pages/upload/upload.component';
 
 const MODALS: { [name: string]: Type<any> } = {
   deleteDoc: DeleteComponent,
+  uploadDoc: UploadComponent
 };
 
 @Component({

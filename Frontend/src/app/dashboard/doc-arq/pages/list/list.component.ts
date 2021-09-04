@@ -10,10 +10,12 @@ import { Usuario } from '../../../../shared/interfaces/usuario';
 import { DeleteComponent } from '../delete/delete.component';
 import { DocumentArq } from '../../../../shared/interfaces/documentArq';
 import { DocArqService } from '../../../../shared/services/doc-arq.service';
+import { UploadComponent } from 'src/app/dashboard/doc-arq-mod/pages/upload/upload.component';
 
 
 const MODALS: { [name: string]: Type<any> } = {
   deleteDoc: DeleteComponent,
+  uploadDoc: UploadComponent
 };
 
 @Component({

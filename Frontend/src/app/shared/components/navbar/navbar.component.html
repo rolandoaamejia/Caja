@@ -14,16 +14,8 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        {{getUserName()}}
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <!-- <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a> -->
-                        <button class="dropdown-item" (click)="logOut()">Cerrar sesión</button>
-                    </div>
+                <li class="nav-item">
+                    <a class="nav-link" style="cursor: pointer;" (click)="logOut()" >Cerrar sesión</a>
                 </li>
             </ul>
         </div>
