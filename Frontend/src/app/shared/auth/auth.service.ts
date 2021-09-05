@@ -45,6 +45,10 @@ export class AuthService {
     return this.getRol() === 'Administrador' ? true : false;
   }
 
+  public userNow(): string {
+    return localStorage.getItem('usuario') || '';
+  }
+
   public postSignin(usuario: Usuario): Observable<any> {
     // let headers = new HttpHeaders()
     // headers = headers.append('Authorization', 'undefined')

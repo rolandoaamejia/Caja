@@ -27,7 +27,8 @@
                             </tr>
                         </thead>
                         <tbody class="">
-                            <tr *ngFor="let u of filteredOptions$ | async | paginator:pageSize:page; index as i">
+                            <tr *ngFor="let u of filteredOptions$ | async | paginator:pageSize:page; index as i"
+                               >
                                 <!-- <th scope="row">{{ area.id }}</th> -->
                                 <td>
                                     <ngb-highlight [result]="u.usuario" [term]="filterControl.value"></ngb-highlight>
@@ -37,13 +38,11 @@
                                     </ngb-highlight>
                                 </td>
                                 <td class="options">
-                                    <a class="btn btn-outline-secondary m-1"
-                                    [routerLink]="[ 'list/', u.id ]"
-                                    >
+                                    <a class="btn btn-outline-secondary m-1" [routerLink]="[ 'list/', u.id ]" *ngIf="authService.userNow()===u.usuario">
                                         Ver documentos
                                         <i class="fas fa-file-alt ml-1"></i>
                                     </a>
-                                   
+
                                 </td>
                             </tr>
                         </tbody>

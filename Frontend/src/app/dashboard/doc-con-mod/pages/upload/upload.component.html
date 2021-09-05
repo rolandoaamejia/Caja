@@ -12,7 +12,7 @@
         <div class="form-group">
             <label for="inputCuenta">Cuenta</label>
             <input type="text" formControlName="cuenta" class="form-control" id="inputCuenta"
-                aria-describedby="emailHelp" placeholder="Ingrese el cuenta" required
+                aria-describedby="emailHelp" placeholder="Ingrese la cuenta" required
                 [class.is-valid]="myForm.get('cuenta')?.valid" [class.is-invalid]="myForm.get('cuenta')?.invalid &&
                 (myForm.get('cuenta')?.dirty ||
                   myForm.get('cuenta')?.touched)">

@@ -7,6 +7,7 @@ import { startWith, map } from 'rxjs/operators';
 import { Usuario } from 'src/app/shared/interfaces/usuario';
 import { UsersService } from 'src/app/shared/services/users.service';
 import { SignupComponent } from '../../../user/pages/signup/signup.component';
+import { AuthService } from '../../../../shared/auth/auth.service';
 
 const MODALS: { [name: string]: Type<any> } = {
   signup: SignupComponent,
@@ -35,6 +36,7 @@ export class ListUsersComponent implements OnInit {
     private configModal: NgbModalConfig,
     private _modalService: NgbModal,
     private usersService: UsersService,
+    public authService:AuthService,
     private toastr: ToastrService
   ) {
     configModal.backdrop = "static";

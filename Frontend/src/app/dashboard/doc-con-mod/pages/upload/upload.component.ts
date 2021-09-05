@@ -6,6 +6,7 @@ import { UsersService } from 'src/app/shared/services/users.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DocumentCon } from '../../../../shared/interfaces/documentCon';
 import { DocumentArq } from '../../../../shared/interfaces/documentArq';
+import { DocConService } from '../../../../shared/services/doc-con.service';
 
 @Component({
   selector: 'app-upload',
@@ -22,7 +23,7 @@ export class UploadComponent implements OnInit {
   constructor(
     public modal: NgbActiveModal,
     private toastr: ToastrService,
-    private docArqService: DocArqService,
+    private docConService: DocConService,
     private fb: FormBuilder,
   ) { }
 
@@ -52,7 +53,7 @@ export class UploadComponent implements OnInit {
       fechaDocumento: new Date(`${year}-${month}-${day}`),
     } as DocumentArq;
 
-    this.docArqService.postUploadDocument(doc, this.selectedFileImage).subscribe((res) => {
+    this.docConService.postUploadDocument(doc, this.selectedFileImage).subscribe((res) => {
       this.toastr.success(`${res.message}`);
       this.modal.close();
     })

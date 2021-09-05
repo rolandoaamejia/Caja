@@ -19,7 +19,7 @@ export const postUploadDocumentCon = async (req: Request, res: Response): Promis
         if (!req.file) return res.status(400).json({ message: `Error solo se aceptan archivos de tipo xlsx` });
         const { cuenta, banco, fechaDocumento } = req.body;
 
-        const documentDate = (new Date()).toISOString().split('T');
+        const documentDate = (new Date(fechaDocumento)).toISOString().split('T');
         const month: string = documentDate[0].split('-')[1];
         const year: string = documentDate[0].split('-')[0];
         const codigo: string = `con-00${month}-${year}`;
@@ -120,8 +120,8 @@ export const getDocumentsCon = async (req: Request, res: Response): Promise<Resp
 
         const documentsFound = await getRepository(DocConEty).createQueryBuilder()
             .select("id, codigo, cuenta, banco, fechaDocumento, fechaCreacion, fechaActualizacion")
-            .where("fechaActualizacion >= :start", { start })
-            .andWhere("fechaActualizacion <= :end", { end })
+            .where("fechaDocumento >= :start", { start })
+            .andWhere("fechaDocumento <= :end", { end })
             .andWhere("usuarioId = :usuario", { usuario: req.userId })
             .execute() as DocumentCon[];
 
@@ -140,8 +140,8 @@ export const getDocumentsConAdmin = async (req: Request, res: Response): Promise
 
         const documentsFound = await getRepository(DocConEty).createQueryBuilder()
             .select("id, codigo, cuenta, banco, fechaDocumento, fechaCreacion, fechaActualizacion")
-            .where("fechaActualizacion >= :start", { start })
-            .andWhere("fechaActualizacion <= :end", { end })
+            .where("fechaDocumento >= :start", { start })
+            .andWhere("fechaDocumento <= :end", { end })
             // .andWhere("usuarioId = :usuario", { usuario: id })
             .execute() as DocumentCon[];
 
@@ -255,7 +255,7 @@ export const postUploadDocumentArq = async (req: Request, res: Response): Promis
         if (!req.file) return res.status(400).json({ message: `Error solo se aceptan archivos de tipo xlsx` });
         const { cuenta, banco, oficina, responsable, fechaDocumento } = req.body;
 
-        const documentDate = (new Date()).toISOString().split('T');
+        const documentDate = (new Date(fechaDocumento)).toISOString().split('T');
         const month: string = documentDate[0].split('-')[1];
         const year: string = documentDate[0].split('-')[0];
         const codigo: string = `arq-00${month}-${year}`;
@@ -361,8 +361,8 @@ export const getDocumentsArq = async (req: Request, res: Response): Promise<Resp
 
         const documentsFound = await getRepository(DocArqEty).createQueryBuilder()
             .select("id, codigo, cuenta, banco, oficina, responsable, fechaDocumento, fechaCreacion, fechaActualizacion")
-            .where("fechaActualizacion >= :start", { start })
-            .andWhere("fechaActualizacion <= :end", { end })
+            .where("fechaDocumento >= :start", { start })
+            .andWhere("fechaDocumento <= :end", { end })
             // .andWhere("usuarioId = :usuario", { usuario: req.userId })
             .execute() as DocumentArq[];
 
@@ -381,8 +381,8 @@ export const getDocumentsArqAdmin = async (req: Request, res: Response): Promise
 
         const documentsFound = await getRepository(DocArqEty).createQueryBuilder()
             .select("id, codigo, cuenta, banco, oficina, responsable, fechaDocumento, fechaCreacion, fechaActualizacion")
-            .where("fechaActualizacion >= :start", { start })
-            .andWhere("fechaActualizacion <= :end", { end })
+            .where("fechaDocumento >= :start", { start })
+            .andWhere("fechaDocumento <= :end", { end })
             .andWhere("usuarioId = :usuario", { usuario: id })
             .execute() as DocumentArq[];
 

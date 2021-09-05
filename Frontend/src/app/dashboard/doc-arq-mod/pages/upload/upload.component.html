@@ -12,7 +12,7 @@
         <div class="form-group">
             <label for="inputCuenta">Cuenta</label>
             <input type="text" formControlName="cuenta" class="form-control" id="inputCuenta"
-                aria-describedby="emailHelp" placeholder="Ingrese el cuenta" required
+                aria-describedby="emailHelp" placeholder="Ingrese la cuenta" required
                 [class.is-valid]="myForm.get('cuenta')?.valid" [class.is-invalid]="myForm.get('cuenta')?.invalid &&
                 (myForm.get('cuenta')?.dirty ||
                   myForm.get('cuenta')?.touched)">
@@ -34,7 +34,7 @@
         <div class="form-group">
             <label for="inputOficina">Oficina</label>
             <input type="text" formControlName="oficina" class="form-control" id="inputOficina"
-                aria-describedby="emailHelp" placeholder="Ingrese el oficina" required
+                aria-describedby="emailHelp" placeholder="Ingrese la oficina" required
                 [class.is-valid]="myForm.get('oficina')?.valid" [class.is-invalid]="myForm.get('oficina')?.invalid &&
                 (myForm.get('oficina')?.dirty ||
                   myForm.get('oficina')?.touched)">

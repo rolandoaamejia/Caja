@@ -39,6 +39,7 @@
                                 <td class="options">
                                     <a class="btn btn-outline-secondary m-1"
                                     [routerLink]="[ 'list/', u.id ]"
+                                    *ngIf="authService.userNow()===u.usuario"
                                     >
                                         Ver documentos
                                         <i class="fas fa-file-alt ml-1"></i>
