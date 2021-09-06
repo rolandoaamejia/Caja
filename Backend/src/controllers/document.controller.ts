@@ -122,7 +122,7 @@ export const getDocumentsCon = async (req: Request, res: Response): Promise<Resp
             .select("id, codigo, cuenta, banco, fechaDocumento, fechaCreacion, fechaActualizacion")
             .where("fechaDocumento >= :start", { start })
             .andWhere("fechaDocumento <= :end", { end })
-            .andWhere("usuarioId = :usuario", { usuario: req.userId })
+            // .andWhere("usuarioId = :usuario", { usuario: req.userId })
             .execute() as DocumentCon[];
 
         return res.status(200).json(documentsFound);
@@ -198,12 +198,12 @@ export const getDocumentConByCodeAdmin = async (req: Request, res: Response): Pr
 
 export const getDocumentXLSXConByCode = async (req: Request, res: Response): Promise<Response | void> => {
     try {
-        const { codigo } = req.params;
+        const { id, codigo } = req.params;
 
         const documentFound = await getRepository(DocConEty).findOne({
             select: ["id", "documento"],
             where: {
-                usuario: req.userId,
+                id,
                 codigo
             }
         }) as DocConEty;
@@ -333,7 +333,7 @@ export const deleteDocumentArq = async (req: Request, res: Response): Promise<Re
                 codigo
             }
         }) as DocumentArq;
-        
+
 
         await deleteDocumentByName(documentFound.documento);
 
@@ -440,12 +440,12 @@ export const getDocumentArqByCodeAdmin = async (req: Request, res: Response): Pr
 
 export const getDocumentXLSXArqByCode = async (req: Request, res: Response): Promise<Response | void> => {
     try {
-        const { codigo } = req.params;
+        const { id, codigo } = req.params;
 
         const documentFound = await getRepository(DocArqEty).findOne({
             select: ["id", "documento"],
             where: {
-                usuario: req.userId,
+                id,
                 codigo
             }
         }) as DocArqEty;

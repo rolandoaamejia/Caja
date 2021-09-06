@@ -65,9 +65,9 @@ export class DocArqService {
     return this.http.get<any>(`${this.endPoint}/arching/${codigo}`)
   }
 
-  public getDocumentXLSXByCode(codigo: string): Observable<any> {
+  public getDocumentXLSXByCode(id: number | undefined, codigo: string): Observable<any> {
 
-    return this.http.get<any>(`${this.endPoint}/arching-pdf/${codigo}`, {
+    return this.http.get<any>(`${this.endPoint}/arching-pdf/${id}/${codigo}`, {
       responseType: 'blob' as 'json'
     })
   }

@@ -18,8 +18,8 @@ router.delete('/admin-conciliation/:id/:codigo', [verifyRolAdmin, deleteDocument
 router.get('/conciliation/:codigo', [tokenValidation, getDocumentConByCode]);
 router.get('/conciliations', [tokenValidation, getDocumentsCon]);
 
-router.get('/conciliation-pdf/:codigo', [tokenValidation, getDocumentXLSXConByCode]);
-router.get('/conciliation-pdf/:id/:codigo', [verifyRolAdmin, getDocumentXLSXConByCodeAdmin]);
+router.get('/conciliation-pdf/:id/:codigo', [tokenValidation, getDocumentXLSXConByCode]);
+// router.get('/conciliation-pdf/:id/:codigo', [verifyRolAdmin, getDocumentXLSXConByCodeAdmin]);
 
 //#endregion
 
@@ -36,8 +36,8 @@ router.delete('/admin-arching/:id/:codigo', [verifyRolAdmin, deleteDocumentArq])
 router.get('/arching/:codigo', [tokenValidation, getDocumentArqByCode]);
 router.get('/arches', [tokenValidation, getDocumentsArq]);
 
-router.get('/arching-pdf/:codigo', [tokenValidation, getDocumentXLSXArqByCode]);
-router.get('/arching-pdf/:id/:codigo', [verifyRolAdmin, getDocumentXLSXArqByCodeAdmin]);
+router.get('/arching-pdf/:id/:codigo', [tokenValidation, getDocumentXLSXArqByCode]);
+// router.get('/arching-pdf/:id/:codigo', [verifyRolAdmin, getDocumentXLSXArqByCodeAdmin]);
 
 //#endregion
 

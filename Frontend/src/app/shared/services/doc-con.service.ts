@@ -62,9 +62,9 @@ export class DocConService {
     return this.http.get<any>(`${this.endPoint}/conciliation/${codigo}`)
   }
 
-  public getDocumentXLSXByCode(codigo: string): Observable<any> {
+  public getDocumentXLSXByCode(id: number | undefined, codigo: string): Observable<any> {
 
-    return this.http.get<any>(`${this.endPoint}/conciliation-pdf/${codigo}`, {
+    return this.http.get<any>(`${this.endPoint}/conciliation-pdf/${id}/${codigo}`, {
       responseType: 'blob' as 'json'
     })
   }

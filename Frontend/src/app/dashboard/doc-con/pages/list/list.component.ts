@@ -83,7 +83,7 @@ export class ListComponent implements OnInit {
   }
 
   getDocuments(id: number): void {
-    this.docConService.getDocumentsAdminById(id, this.formatter.format(this.calendar.getPrev(this.fromDate || this.dateFormat, "d", 1)), this.formatter.format(this.calendar.getNext(this.toDate || this.dateFormat, "d", 1))).subscribe((res) => {
+    this.docConService.getDocumentsAdminById(id, this.formatter.format(this.calendar.getPrev(this.fromDate || this.dateFormat, "d", 2)), this.formatter.format(this.calendar.getNext(this.toDate || this.dateFormat, "d", 2))).subscribe((res) => {
 
       this.documents = res;
       // console.log(res);

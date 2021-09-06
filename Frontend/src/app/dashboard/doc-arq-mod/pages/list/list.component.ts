@@ -100,8 +100,8 @@ export class ListComponent implements OnInit {
     });
   }
 
-  downloadXLSX(codigo: string): void {
-    this.docArqService.getDocumentXLSXByCode(codigo).subscribe((res) => {
+  downloadXLSX(id: number, codigo: string): void {
+    this.docArqService.getDocumentXLSXByCode(id, codigo).subscribe((res) => {
       var newBlob = new Blob([res], { type: "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," });
       const data = window.URL.createObjectURL(newBlob);
 
